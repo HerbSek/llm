@@ -104,7 +104,7 @@ async def get_llm(data:dict):
 async def llm_scraper(link:str):
     url = "https://selenium-scraper-sayw.onrender.com/scrape" 
     payload = {"link": link}
-    my_scrape = function_scrape(url,payload)
+    my_scrape =await function_scrape(url,payload)
     output = llm(my_scrape)
     return output 
 
