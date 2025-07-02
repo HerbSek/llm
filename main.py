@@ -86,7 +86,7 @@ def function_scrape(url,payload):
     my_request = request.json()
     return my_request
 
-# ////////////////////////////////////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////
 
 @app.get("/healthy")
 async def function():
@@ -102,9 +102,9 @@ async def get_llm(data:dict):
 
 @app.get("/results")
 async def llm_scraper(link:str):
-    url = "https://selenium-scraper-sayw.onrender.com/scrape" 
-    payload = {"link": link}
-    my_scrape = function_scrape(url,payload)
+    url = "https://apexherbert200-clickloom-scraper.hf.space/scrape" 
+    payload = {"url": link}
+    my_scrape = function_scrape(url,payload)  # In case we pivot to hugging face, then we add screenshot and from here we work with the data structure 
     output = llm(my_scrape)
     return output 
 
