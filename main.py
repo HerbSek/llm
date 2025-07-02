@@ -86,6 +86,9 @@ def function_scrape(url,payload):
     my_request = request.json()
     return my_request
 
+def function_scrape_post(url, payload):
+    response = requests.post(url=url, json=payload)
+    return response.json()
 # ////////////////////////////////////////////
 
 @app.get("/healthy")
@@ -104,9 +107,17 @@ async def get_llm(data:dict):
 async def llm_scraper(link:str):
     url = "https://apexherbert200-clickloom-scraper.hf.space/scrape" 
     payload = {"url": link}
-    my_scrape = function_scrape(url,payload)  # In case we pivot to hugging face, then we add screenshot and from here we work with the data structure 
-    output = llm(my_scrape)
-    return output 
+    try:
+        my_scrape = function_scrape_post(url,payload)  # In case we pivot to hugging face, then we add screenshot and from here we work with the data structure 
+    except Exception as ee:
+        return {"msg": f"Unable to call : {ee}"}
+    try:
+        output = llm(my_scrape)
+        return output
+    except Exception as e:
+        raise HTTPException(404, "Unable to provide request at this time")
+
+     
 
 
 
