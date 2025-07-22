@@ -105,7 +105,7 @@ async def get_llm(data:dict):
 
 @app.get("/results")
 async def llm_scraper(link:str):
-    url = "https://apexherbert200-clickloom-scraper-2.hf.space/scrape" 
+    url = "https://clickloom-scraper.onrender.com/scrape" 
     payload = {"url": link}
     try:
         my_scrape = function_scrape_post(url,payload)  # In case we pivot to hugging face, then we add screenshot and from here we work with the data structure 
