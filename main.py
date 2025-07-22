@@ -3,6 +3,7 @@ import json
 import os 
 from groq import Groq 
 from dotenv import load_dotenv
+from iterative_test import iterate_links, check_links
 import requests 
 
 app=FastAPI(title = "LLM GROQ API")
@@ -117,7 +118,15 @@ async def llm_scraper(link:str):
     except Exception as e:
         raise HTTPException(404, "Unable to provide request at this time")
 
-     
+
+@app.post("/sublink_check")
+async def sublink(data:dict):
+    try:
+        out_1 =iterate_links(data)
+        out_2 =check_links(out_1)
+        return map_urls_to_summaries(out_1, out_2)
+    except Exception as e:
+        raise HTTPException(404, "Unable to provide request at this time")
 
 
 
