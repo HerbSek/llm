@@ -15,54 +15,58 @@ client = Groq(api_key= os.getenv("GROQ_API_KEY"))
 def llm(data):
     try:
         llm_prompt = f"""
-        You are a web threat analysis engine.
+You are a web threat analysis engine.
 
-        Analyze the following webpage data for signs of phishing, scams, malware, or suspicious intent. 
-        Based on the input below, extract security-relevant insights and return a JSON object ONLY — no extra text.
+Analyze the following webpage data for signs of phishing, scams, malware, or suspicious intent. 
+Based on the input below, extract security-relevant insights and return a **JSON object ONLY** — do not include *any* markdown, backticks, or extra text. No comments, no introductions, no explanations.
 
-        ---
+---
 
-        INPUT DATA:
+INPUT DATA:
 
-        - Page Text:
-        {data["page_text"]}
+- Page Text:
+{data["page_text"]}
 
-        - Script Sources:
-        {data["script_sources"]}
+- Script Sources:
+{data["script_sources"]}
 
-        - Link Sources:
-        {data["link_sources"]}
+- Link Sources:
+{data["link_sources"]}
 
-        ---
+---
 
-        Your task is to return a security report in the following **JSON format** in this bracket :(
-  {{
-        "verdict": "<Safe / Suspicious / Malicious>",
-        "summary": "<A deep analyzed description/summary of what this page appears to be doing and checking how legit it is>",
-        "recommendations": "<An advice on what the user should do or what you will recommend the user do>",
-        "page_text_findings": {{
-            "suspicious_phrases": ["<list any suspicious phrases or keywords>"],
-            "phishing_indicators": <true/false>
-        }},
-        "script_analysis": {{
-            "total_scripts": <number>,
-            "external_scripts": <number>,
-            "suspicious_domains": ["<list domains if any>"],
-            "minified_or_encoded": <true/false>
-        }},
-        "link_analysis": {{
-            "total_links": <number>,
-            "external_links": <number>,
-            "redirect_services_used": ["<bit.ly>", "<t.co>", ...],
-            "phishing_like_links": ["<list if any links mimic legitimate services>"]
-        }},
-        "risk_score": <float score between 0 and 10>,
-        }} )
+Return a JSON object in this **exact format**:
 
-        Strict rules:
-        - If no suspicious signs are found, fields should return empty lists or false, not null.
-        - Only return valid JSON — do NOT include markdown and nothing to enclose the output with like ''' or ```
-        """
+{{
+  "verdict": "<Safe / Suspicious / Malicious>",
+  "summary": "<A deep analyzed description/summary of what this page appears to be doing and checking how legit it is>",
+  "recommendations": "<Advice on what the user should do>",
+  "page_text_findings": {{
+    "suspicious_phrases": ["<list any suspicious phrases or keywords>"],
+    "phishing_indicators": <true/false>
+  }},
+  "script_analysis": {{
+    "total_scripts": <number>,
+    "external_scripts": <number>,
+    "suspicious_domains": ["<list domains if any>"],
+    "minified_or_encoded": <true/false>
+  }},
+  "link_analysis": {{
+    "total_links": <number>,
+    "external_links": <number>,
+    "redirect_services_used": ["<bit.ly>", "<t.co>", ...],
+    "phishing_like_links": ["<list if any links mimic legitimate services>"]
+  }},
+  "risk_score": <float between 0 and 10>
+}}
+
+Rules:
+- Do not use markdown formatting like ``` or ```.
+- Do not explain anything.
+- Output **only** the JSON object. No extra characters before or after.
+- If no suspicious signs are found, use empty arrays `[]` and `false` appropriately.
+"""
+
 
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": llm_prompt}],
