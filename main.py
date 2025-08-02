@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from iterative_test import iterate_links, check_links, map_urls_to_summaries
 import requests 
 
-app=FastAPI(title = "LLM GROQ API")
+app=FastAPI(title = "Clickloom API")
 
 load_dotenv()
 
@@ -66,7 +66,7 @@ def llm(data):
 
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": llm_prompt}],
-            model="llama-3.3-70b-versatile",
+            model="compound-beta-mini",
         )
 
         output_f = chat_completion.choices[0].message.content.strip()
